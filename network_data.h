@@ -31,7 +31,7 @@ typedef enum {
 } network_packet;
 
 typedef enum {
-	UKNOWN_COMMAND,
+	UNKNOWN_COMMAND,
 	UNEXPECTED_COMMAND,
 	TEAM_JOIN_BAD_NAME,
 	TEAM_CREATE_BAD_NAME,
