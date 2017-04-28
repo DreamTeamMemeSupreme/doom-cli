@@ -5,34 +5,37 @@
 #ifndef DOOM_CLIENT_UI_H
 #define DOOM_CLIENT_UI_H
 
-#endif //DOOM_CLIENT_UI_H
-
 #include <ncurses.h>
+#include "network_data.h"
+
+//get a key
+char ui_get_key();
 
 //read an input from a user
-char* read_command();
+char* ui_read_input();
 
 //write msg in status bar
-void write_msg(char* msg);
+void ui_write_msg(char* msg);
 
 //display default UI
-void ui_default();
+void ui_start();
+
+//turn off ncurses
+void ui_close();
 
 //display list of teams in general lobby
-void ui_team_list(char** teams);
+void ui_team_list(response_team_list_data* team_list);
 
 //display lobby
-//-players (players[0] is the creator of this lobby)
-//-size (size of players)
-void ui_team_lobby(char** players, uint16_t size);
+void ui_team_lobby(response_team_info_data* team_info);
 
 //display team info
-//-players (players[0] is the creator of this lobby)
-//-size (size of players)
-void ui_team_info(char* team_name, char** players, uint16_t size);
+void ui_team_info(response_team_info_data* team_info);
 
 //display field
-void ui_game_field(char** field);
+void ui_game_field(response_field_update_data* field);
 
 //display state
-void ui_game_state(uint16_t weapon_ban_timer, uint16_t health, uint16_t ammo_left);
+void ui_game_state(response_state_update_data* state);
+
+#endif //DOOM_CLIENT_UI_H
