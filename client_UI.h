@@ -7,12 +7,17 @@
 
 #include <ncurses.h>
 #include "network_data.h"
-
-//get a key
-char ui_get_key();
-
-//read an input from a user
-char* ui_read_input();
+#include "client_task_queue.h"
+#include "client_state.h"
+#include "client_task.h"
+#include <string.h>
+#include <stdlib.h>
+#define MAX_INPUT_SIZE 100
+#define MAX_DISPLAYED_NAME_LENGTH 60
+#define NUMBER_OF_TEAMS_ON_PAGE 20
+#define NUMBER_OF_PLAYERS_ON_PAGE 2
+#define STATUS_BAR_LINE 27
+#define MIN(X, Y) (((X) < (Y)) ? (X) : (Y))
 
 //write msg in status bar
 void ui_write_msg(char* msg);
@@ -23,19 +28,45 @@ void ui_start();
 //turn off ncurses
 void ui_close();
 
-//display list of teams in general lobby
+//to be run in thread, data=client_state, saves all user input in queue
+void* ui_read_input( void* data );
+
+//write message to status bar
+void ui_write_to_status_bar( char* msg );
+
+//initial display of general lobby
+void ui_general();
+
+//initial display of list of teams in general lobby
 void ui_team_list(response_team_list_data* team_list);
 
-//display lobby
+//shows needed page of team_list in list stage
+void ui_update_team_list(response_team_list_data* team_list, int page);
+
+//initial display of lobby
 void ui_team_lobby(response_team_info_data* team_info);
 
-//display team info
+//shows needed page of team_info in pre-game lobby
+void ui_update_team_lobby(response_team_info_data* team_info, int page);
+
+//initial display of team info
 void ui_team_info(response_team_info_data* team_info);
 
-//display field
-void ui_game_field(response_field_update_data* field);
+//shows needed page of team_info in info stage
+void ui_update_team_info(response_team_info_data* team_info, int page);
 
-//display state
-void ui_game_state(response_state_update_data* state);
+//initial display of game in game stage
+void ui_game(response_game_started* game_started);
+
+//updates field in game stage
+void ui_update_game_field(response_field_update_data* field);
+
+//updates game_state in game stage
+void ui_update_game_state(response_state_update_data* state);
+
+typedef struct {
+    struct client_task_queue* queue;
+    client_state* state;
+} ui_read_input_data;
 
 #endif //DOOM_CLIENT_UI_H
