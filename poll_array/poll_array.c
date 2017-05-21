@@ -6,11 +6,13 @@
 //  Copyright © 2017 Anton Suslov. All rights reserved.
 //
 
+#include <errno.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
 #include <limits.h>
 #include "poll_array.h"
+
 
 void poll_array_init(poll_array *this, const unsigned int size, pa_error *err) {
 	poll_array new_struct = {
@@ -59,7 +61,7 @@ void poll_array_delete(poll_array *this) {
 		free(this->active);
 	}
 	if (this->descriptors) {
-		free(this->active);
+		free(this->descriptors);
 	}
 	if (this->responsible) {
 		free(this->responsible);
@@ -94,6 +96,10 @@ int poll_array_poll(poll_array *this, int timeout, pa_error *err) {
 	if (this->polled <= 0) {
 		this->polled = poll(this->descriptors, this->size, timeout);
 		if (this->polled < 0) {
+			if (errno == EINTR) {
+				*err = PA_OK;
+				return -2;
+			}
 			*err = PA_UNKNOWN;
 			perror(NULL);
 			return -1;
@@ -122,6 +128,7 @@ void poll_array_close(poll_array *this, int fd_idx, pa_error *err) {
 		return;
 	}
 	close(this->descriptors[fd_idx].fd);
+	this->descriptors[fd_idx].fd = 0;
 	this->descriptors[fd_idx].events = 0;
 	this->active[fd_idx] = 0;
 	*err = PA_OK;

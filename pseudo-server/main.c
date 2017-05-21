@@ -88,7 +88,7 @@ int main(int argc, const char * argv[]) {
 	ps_delete(&server);
 	close(sigint_pipe[0]);
 	close(sigint_pipe[1]);
-	if (error != PS_OK) {
+	if (error == PS_OK) {
 		return 0;
 	} else {
 		return -1;

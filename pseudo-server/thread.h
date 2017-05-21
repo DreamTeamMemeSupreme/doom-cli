@@ -10,7 +10,6 @@
 #define thead_h
 
 #include <stdio.h>
-#include "../poll_array/poll_array.h"
 
 #define POLL_TIMEOUT -1
 
@@ -20,6 +19,28 @@ typedef enum {
 	TH_EXIT = 0,
 	TH_DROP_CLIENT
 } thread_out;
+
+typedef enum {
+	TH_NEW_CLIENT
+} thread_in;
+
+typedef struct {
+    size_t length;
+    thread_in code;
+} thread_in_head;
+
+typedef struct {
+	size_t length;
+	thread_out code;
+} thread_out_head;
+
+typedef struct {
+	int fd;
+} thread_in_new_client;
+
+typedef struct {
+    int fd;
+} thread_out_new_client;
 
 typedef struct {
 	char *name;

@@ -17,7 +17,7 @@ typedef struct {
 	struct pollfd *descriptors;
 	char *active;
 	char *responsible;
-	const int size;
+	const unsigned int size;
 	int last_cursor;
 	int polled;
 } poll_array;

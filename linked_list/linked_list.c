@@ -13,14 +13,17 @@
 
 void linked_list_node_init(linked_list_node *this) {
 	this->next = NULL;
-	this->value = memory_buffer_new();
+	this->value = NULL;
 }
 
 void linked_list_node_delete(linked_list_node *this) {
 	if (!this) {
 		return;
 	}
-	free(this->value.value);
+	if (this->value) {
+		memory_buffer_delete(this->value);
+	}
+	free(this->value);
 }
 
 void linked_list_init(linked_list *this) {
@@ -35,7 +38,7 @@ void linked_list_delete(linked_list *this) {
 	}
 	linked_list_node *to_delete = this->first;
 	linked_list_node *cursor;
-	for(cursor = this->first.next; cursor; cursor = cursor->next) {
+	for(cursor = this->first->next; cursor; cursor = cursor->next) {
 		linked_list_node_delete(to_delete);
 		free(to_delete);
 		to_delete = cursor;
@@ -44,10 +47,11 @@ void linked_list_delete(linked_list *this) {
 	free(to_delete);
 }
 
-void linked_list_push_front(linked_list *this, const memory_buffer *data) {
+//
+void linked_list_push_front(linked_list *this, memory_buffer *data) {
 	linked_list_node *new = malloc(sizeof(linked_list_node));
 	linked_list_node_init(new);
-	new->value = *data;
+	new->value = data;
 	if (!this->first) {
 		this->last = this->first = new;
 	} else {
@@ -57,26 +61,32 @@ void linked_list_push_front(linked_list *this, const memory_buffer *data) {
 	this->size++;
 }
 
-void linked_list_pop_front(linked_list *this) {
+memory_buffer *linked_list_pop_front(linked_list *this) {
+	memory_buffer *to_return;
 	linked_list_node *to_delete;
 	if (!this->first) {
-		return;
+		return NULL;
 	}
 	to_delete = this->first;
 	this->first = to_delete->next;
 	if(!this->first) {
 		this->last = NULL;
 	}
-	linked_list_node_delete(to_delete);
+	to_return = to_delete->value;
+	free(to_delete);
 	this->size--;
+	return to_return;
+	
 }
 
-void linked_list_push_back(linked_list *this, const memory_buffer *data) {
+void linked_list_push_back(linked_list *this, memory_buffer *data) {
 	linked_list_node *new = malloc(sizeof(linked_list_node));
 	linked_list_node_init(new);
-	new->value = *data;
+	new->value = data;
 	if (!this->first) {
 		this->last = this->first = new;
+	} else if (this->first == this->last) {
+		this->last = this->first->next = new;
 	} else {
 		this->last->next = new;
 	}

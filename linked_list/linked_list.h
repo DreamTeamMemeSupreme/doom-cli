@@ -13,7 +13,7 @@
 
 typedef struct linked_list_node {
     struct linked_list_node* next;
-    memory_buffer value;
+    memory_buffer *value;
 } linked_list_node;
 
 typedef struct {
@@ -26,9 +26,9 @@ void linked_list_init(linked_list *this);
 
 void linked_list_delete(linked_list *this);
 
-void linked_list_push_back(linked_list *this, const memory_buffer *data);
+void linked_list_push_back(linked_list *this, memory_buffer *data);
 
-void linked_list_push_front(linked_list *this, const memory_buffer *data);
+void linked_list_push_front(linked_list *this, memory_buffer *data);
 
 memory_buffer *linked_list_pop_front(linked_list *this);
 

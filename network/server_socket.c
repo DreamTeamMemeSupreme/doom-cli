@@ -43,10 +43,12 @@ void server_socket_init(inet_socket *this, int port, int backlog, nw_error *err)
 }
 
 void server_socket_delete(inet_socket *this) {
+	int tr = 1;
 	if (this->active) {
 		close(this->sockfd);
 		this->active = 0;
 	}
+	setsockopt(this->sockfd, SOL_SOCKET, SO_REUSEADDR, &tr, sizeof(tr));
 }
 
 void server_socket_accept(inet_socket *this, nw_error *err, inet_socket *output) {

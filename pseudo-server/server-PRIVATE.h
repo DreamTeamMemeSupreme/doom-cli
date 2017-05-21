@@ -19,4 +19,14 @@ void ps_client_read(ps_server *this, int client, ps_error *err);
 
 void ps_client_write(ps_server *this, int client, ps_error *err);
 
+void ps_move_client(ps_server *this, int client, int room, ps_error *err);
+
+void ps_create_thread(ps_server *this, int client, ps_error *err);
+
+void ps_process_thread_reply(ps_server *this, int client, ps_error *err);
+
+void ps_accept_thread_client(ps_server *this, int client, ps_error *err);
+
+void ps_process_thread_stop(ps_server *this, int client, ps_error *err);
+
 #endif /* server_PRIVATE_h */
