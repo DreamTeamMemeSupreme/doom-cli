@@ -50,6 +50,17 @@ typedef enum {
 } game_direction;
 
 typedef struct {
+	uint32_t packet_size;
+	uint32_t proto_version;
+	uint16_t message_count;
+} packet_header;
+
+typedef struct {
+	uint16_t message_size;
+	network_packet type;
+};
+
+typedef struct {
 	uint16_t err_code;
 	void *message;
 } game_error_data;
@@ -86,13 +97,13 @@ typedef struct {
 	uint16_t size;
 	uint16_t count;
 	char *players[];
-}
+} response_team_info_data;
 
 typedef struct {
 	uint16_t count;
 	uint16_t players[];
 	uint16_t sizes[];
 	char *teams[];
-}
+} response_team_list_data;
 
 #endif /* network_data_h */
