@@ -16,7 +16,7 @@
 
 void poll_array_init(poll_array *this, const unsigned int size, pa_error *err) {
 	poll_array new_struct = {
-		.descriptors = calloc(size, sizeof(poll_array)),
+		.descriptors = calloc(size, sizeof(struct pollfd)),
 		.active = calloc(size, 1),
 		.size = size,
 		.last_cursor = 0,

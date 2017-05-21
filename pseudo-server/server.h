@@ -35,6 +35,7 @@ extern int sigint_pipe[2];
 
 typedef enum {
 	PS_OK = 0,
+	PS_EXIT,
 	PS_ERROR
 } ps_error;
 

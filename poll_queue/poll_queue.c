@@ -171,12 +171,11 @@ void poll_queue_flush_one(poll_queue *this, int idx, pq_error *err) {
 	}
 	if (fcntl(fd, F_SETFL, file_status & ~O_NONBLOCK) == -1) {
 		*err = PQ_ERROR;
+		return;
 	}
 	while ((buf = linked_list_pop_front(&this->queues[idx])) != NULL) {
 		if (write(fd, buf->value, buf->value_length) < 0) {
 			*err = PQ_ERROR;
-			memory_buffer_delete(buf);
-			free(buf);
 		}
 		memory_buffer_delete(buf);
 		free(buf);

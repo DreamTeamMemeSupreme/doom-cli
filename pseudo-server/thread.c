@@ -53,6 +53,7 @@ void thread_server_init(thread_server *this, thread_params *args, ts_error *err)
 		return;
 	}
 	this->poll.descriptors[this->sigint_idx].events = POLLIN;
+	*err = TS_OK;
 }
 
 void thread_server_delete(thread_server *this) {

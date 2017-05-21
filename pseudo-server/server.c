@@ -102,11 +102,11 @@ void ps_run(ps_server *this, ps_error *err) {
 			if (errno == EINTR) {
 				printf("Interrupted poll\n");
 				printf("%d\n", this->poll.descriptors[this->sigint_idx].revents);
-				continue;
+				break;
 			} else {
 				printf("Error on poll: %d\n", poll_error);
 				*err = PS_ERROR;
-				return;
+				break;
 			}
 		}
 		
@@ -118,24 +118,24 @@ void ps_run(ps_server *this, ps_error *err) {
 		if (client == this->sigint_idx) {
 			printf("Bye!\n");
 			*err = PS_OK;
-			return;
+			break;
 		} else if (client == this->server_idx) {
 			ps_accept_conn(this, client, err);
 			if (*err != PS_OK) {
-				return;
+				break;
 			}
 			
 		} else if (client == this->stdin_idx) {
 			fgets(this->reply, BUFFER_SIZE, stdin);
 			if (feof(stdin)) {
 				*err = PS_OK;
-				return;
+				break;
 			}
 			printf("New reply saved\n");
 		} else if (client >= CLIENTS_BEGIN && client < CLIENTS_BEGIN + CLIENTS) {
 			ps_process_client(this, client, err);
 			if (*err != PS_OK) {
-				return;
+				break;
 			}
 		} else if (client >= THREADS_IN_BEGIN && client < THREADS_IN_END) {
 			ps_process_thread_reply(this, client, err);
@@ -143,6 +143,7 @@ void ps_run(ps_server *this, ps_error *err) {
 			printf("Unprocessed client: %d\n", client);
 		}
 	}
+	poll_queue_flush_all(&this->poll, &poll_error);
 }
 
 void ps_process_client(ps_server *this, int client, ps_error *err) {
@@ -199,13 +200,11 @@ void ps_client_read(ps_server *this, int client, ps_error *err) {
 			}
 		}
 		ps_move_client(this, client, room, err);
-		return;
-	}
-	
-	this->poll.descriptors[client].events = POLLIN;
-	ps_client_write(this, client, err);
-	if (*err != PS_OK) {
-		return;
+	} else if (message[0] == 'q') {
+		*err = PS_EXIT;
+	} else {
+		this->poll.descriptors[client].events = POLLIN;
+		ps_client_write(this, client, err);
 	}
 }
 
