@@ -50,7 +50,7 @@ typedef enum {
 } game_direction;
 
 typedef struct {
-    uint16_t err_code;
+    error_type err_code;
     void *message;
 } game_error_data;
 
