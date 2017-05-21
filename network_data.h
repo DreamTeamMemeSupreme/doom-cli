@@ -58,7 +58,7 @@ typedef struct {
 typedef struct {
 	uint16_t message_size;
 	network_packet type;
-};
+} message_header;
 
 typedef struct {
 	uint16_t err_code;
