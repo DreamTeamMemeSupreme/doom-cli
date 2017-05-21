@@ -3,30 +3,35 @@
 //
 
 #include "client_task_queue.h"
+#include "client_task.h"
 
 void client_task_queue_push( struct client_task_queue* queue, client_task* task ) {
+
     pthread_mutex_lock(&(queue->m));
 
-    struct client_task_queue_node new_node;
-    new_node.prev = 0;
-    new_node.task = task;
-    queue->tail = &new_node;
-    queue->tail = new_node.prev;
+    queue->tail = malloc(sizeof(struct client_task_queue_node));
+    queue->tail->task = task;
+    queue->tail->prev = 0;
+    if( queue->head == 0 )
+        queue->head = queue->tail;
 
+    queue->tail = 0;
     pthread_mutex_unlock(&(queue->m));
+
 };
 
 client_task* client_task_queue_pop( struct client_task_queue* queue ) {
     pthread_mutex_lock(&(queue->m));
 
-    if( queue->head == queue->tail )
+    if( queue->head == 0 ) {
+        pthread_mutex_unlock(&(queue->m));
         return 0;
+    }
 
     client_task* res = queue->head->task;
     queue->head = queue->head->prev;
 
     pthread_mutex_unlock(&(queue->m));
-
     return res;
 }
 
