@@ -50,6 +50,17 @@ typedef enum {
 } game_direction;
 
 typedef struct {
+	uint32_t packet_size;
+	uint32_t proto_version;
+	uint16_t message_count;
+} packet_header;
+
+typedef struct {
+	uint16_t message_size;
+	network_packet type;
+};
+
+typedef struct {
 	uint16_t err_code;
 	void *message;
 } game_error_data;
