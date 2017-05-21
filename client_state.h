@@ -6,6 +6,7 @@
 #define DOOM_CLIENT_STATE_H
 
 #include <stdbool.h>
+#include <stdatomic.h>
 #include "network_data.h"
 #include "client_task_queue.h"
 #include <pthread.h>
@@ -22,7 +23,7 @@ typedef struct {
     stage_type stage;
     input_type input;
     bool connection;
-    bool quit;
+    atomic_int quit;
     uint16_t page;
     uint16_t max_page;
     response_team_info_data* team_info;
