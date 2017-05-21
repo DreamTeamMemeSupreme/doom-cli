@@ -12,15 +12,8 @@
 #include "client_task.h"
 #include <string.h>
 #include <stdlib.h>
-#define MAX_INPUT_SIZE 100
-#define MAX_DISPLAYED_NAME_LENGTH 60
-#define NUMBER_OF_TEAMS_ON_PAGE 20
-#define NUMBER_OF_PLAYERS_ON_PAGE 2
-#define STATUS_BAR_LINE 27
-#define MIN(X, Y) (((X) < (Y)) ? (X) : (Y))
-
-//write msg in status bar
-void ui_write_msg(char* msg);
+#define MAX_INPUT_SIZE 60
+#define NUMBER_OF_TEAMS_ON_PAGE 18
 
 //display default UI
 void ui_start();
@@ -63,10 +56,5 @@ void ui_update_game_field(response_field_update_data* field);
 
 //updates game_state in game stage
 void ui_update_game_state(response_state_update_data* state);
-
-typedef struct {
-    struct client_task_queue* queue;
-    client_state* state;
-} ui_read_input_data;
 
 #endif //DOOM_CLIENT_UI_H
