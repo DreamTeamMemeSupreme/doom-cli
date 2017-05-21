@@ -9,7 +9,7 @@
 #ifndef network_data_h
 #define network_data_h
 
-#define PROTO_VERSION 4
+#define PROTO_VERSION 5
 
 #include <stdint.h>
 
@@ -26,6 +26,7 @@ typedef enum {
     GAME_USE_CHARGE,
     GAME_MOVE,
     GAME_SKIP_TURN,
+    RESPONSE_GAME_STARTED,
     RESPONSE_FIELD_UPDATE,
     RESPONSE_STATE_UPDATE,
     RESPONSE_YOUR_TURN,
@@ -94,5 +95,10 @@ typedef struct {
     uint16_t* sizes;
     char** teams;
 } response_team_list_data;
+
+typedef struct {
+    response_field_update_data field;
+    response_state_update_data state;
+} response_game_started;
 
 #endif /* network_data_h */
