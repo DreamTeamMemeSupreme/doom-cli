@@ -3,7 +3,6 @@
 //
 
 #include "client_task_queue.h"
-#include "client_task.h"
 
 void client_task_queue_push( struct client_task_queue* queue, client_task* task ) {
 
@@ -48,4 +47,5 @@ void client_task_queue_delete( struct client_task_queue* queue ) {
         client_task_delete(node->task);
         node = node->prev;
     }
+    free(queue);
 }
