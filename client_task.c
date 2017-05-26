@@ -4,6 +4,8 @@
 
 #include "client_task.h"
 
-void client_task_delete( client_task* task ) {
+void client_task_delete( client_task* task ) 
+{
     free(task->data);
+    free(task);
 }
