@@ -3,7 +3,6 @@
 //
 #include "client_UI.h"
 #include "client_UI_private.h"
-#include "network_data.h"
 
 void ui_start() {
     initscr();
@@ -102,7 +101,7 @@ void ui_update_team_list(response_team_list_data* team_list, int page) {
 
     _ui_clear_team_list();
 
-    int max_page = (team_list->count / NUMBER_OF_TEAMS_ON_PAGE ) + (team_list->count % NUMBER_OF_TEAMS_ON_PAGE != 0);
+    int max_page = MAX(1, ( team_list->count / NUMBER_OF_TEAMS_ON_PAGE ) + (team_list->count % NUMBER_OF_TEAMS_ON_PAGE != 0));
     page = ( (page-1)%max_page + max_page)%max_page + 1;
     char buff[54];
 
@@ -167,7 +166,7 @@ void ui_update_team_info(response_team_info_data* team_info, int page) {
 
     _ui_clear_team_info();
 
-    int max_page = (team_info->count / NUMBER_OF_TEAMS_ON_PAGE ) + (team_info->count % NUMBER_OF_TEAMS_ON_PAGE != 0);
+    int max_page = MAX(1,(team_info->count / NUMBER_OF_TEAMS_ON_PAGE ) + (team_info->count % NUMBER_OF_TEAMS_ON_PAGE != 0));
     page = ( (page-1)%max_page + max_page)%max_page + 1;
     char buff[54];
 
@@ -255,6 +254,7 @@ char* _ui_get_key( atomic_int* isEnd ) {
         if( *c > 0 ) {
             break;
         }
+        SLEEP( 5 );
     }
     return c;
 }
