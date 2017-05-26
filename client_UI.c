@@ -8,7 +8,7 @@ void ui_start() {
     initscr();
     noecho();
     nodelay(stdscr, TRUE);
-    move(31,1);
+    move(31,2);
     pthread_mutex_init(&block_input,NULL);
 }
 
@@ -50,7 +50,7 @@ void ui_write_to_status_bar( char* msg ) {
     getyx(stdscr,t_y,t_x);
 
     _ui_clear_status_bar();
-    mvprintw(29,1,"%s",msg);
+    mvprintw(29,1," %s",msg);
 
     move(t_y, t_x);
     pthread_mutex_unlock(&block_input);
@@ -69,6 +69,14 @@ void ui_general() {
     for( int i = 3; i < 33; i++ ) {
         mvprintw(i,0,"=                                                             =");
     }
+    mvprintw(4,1," Commands in main menu:");
+    mvprintw(6,1," LOGIN <name>          |  login in a client");
+    mvprintw(7,1," CREATE <team-name>    |  create a new team");
+    mvprintw(8,1," JOIN <team-name>      |  join in a team you want");
+    mvprintw(9,1," INFO <team-name>      |  get information about team");
+    mvprintw(10,1," LIST                  |  list existing teams");
+    mvprintw(11,1," EXIT                  |  exit");
+
     mvprintw(28,0,"===============================================================");
     mvprintw(30,0,"===============================================================");
     mvprintw(32,0,"===============================================================");
@@ -116,7 +124,7 @@ void ui_update_team_list(response_team_list_data* team_list, int page) {
         mvprintw(6+i-s_i,59,"%d",team_list->sizes[i]);
     }
 
-    mvprintw(26,2,"Page: %d/%d",page,max_page);
+    mvprintw(26,2,"Page: %d/%d (press z/x to move between pages, q to quit)",page,max_page);
 
     move(t_y,t_x);
     pthread_mutex_unlock(&block_input);
@@ -180,7 +188,7 @@ void ui_update_team_info(response_team_info_data* team_info, int page) {
             mvprintw(6,1,"*");
     }
 
-    mvprintw(26,2,"Page: %d/%d",page,max_page);
+    mvprintw(26,2,"Page: %d/%d (press z/x to move between pages, q to quit)",page,max_page);
 
     move(t_y,t_x);
     pthread_mutex_unlock(&block_input);
@@ -197,6 +205,10 @@ void ui_game(response_game_started* game_started) {
     mvprintw(12,44,"Health");
     mvprintw(14,44,"Ammo");
     mvprintw(16,44,"Ban timer");
+    mvprintw(11,2,"WASD - move");
+    mvprintw(13,2,"F - attack");
+    mvprintw(15,2,"E - use items");
+    mvprintw(17,2,"Q - quit");
     mvprintw(4,20,"=======================");
     mvprintw(26,20,"=======================");
     for( int i = 5; i < 26; i++ )
@@ -254,7 +266,6 @@ char* _ui_get_key( atomic_int* isEnd ) {
         if( *c > 0 ) {
             break;
         }
-        SLEEP( 5 );
     }
     return c;
 }
