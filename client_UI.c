@@ -3,6 +3,7 @@
 //
 #include "client_UI.h"
 #include "client_UI_private.h"
+#include "client_state.h"
 
 void ui_start() {
     initscr();
@@ -21,9 +22,10 @@ void* ui_read_input( void* data ) {
     client_state* state = (client_state*) data;
     while( state->quit == 0 ) {
         if( state->input == COMMAND ) {
-            char* command = _ui_read_command(&(state->quit));
-
+            char* command = _ui_read_command(&(state->quit), &state->input, state->input );
             if( command == 0 ) {
+                if( state->input != COMMAND)
+                    continue;
                 break;
             }
             client_task* task = malloc(sizeof(client_task));
@@ -32,9 +34,12 @@ void* ui_read_input( void* data ) {
             task->data = (void*)command;
             client_task_queue_push(&state->queue, task);
         } else {
-            char* key = _ui_get_key(&(state->quit));
-            if( key == 0 )
+            char* key = _ui_get_key(&(state->quit), &state->input, state->input );
+            if( key == 0 ) {
+                if (state->input != KEY_PRESSED)
+                    continue;
                 break;
+            }
             client_task* task = malloc(sizeof(client_task));
             task->task_type = USER_INPUT;
             task->data_type.input_type = KEY_PRESSED;
@@ -42,6 +47,7 @@ void* ui_read_input( void* data ) {
             client_task_queue_push(&state->queue, task);
         }
     }
+	pthread_exit(0);
 }
 
 void ui_write_to_status_bar( char* msg ) {
@@ -252,10 +258,10 @@ void ui_update_game_state(response_state_update_data* state) {
     pthread_mutex_unlock(&block_input);
 }
 
-char* _ui_get_key( atomic_int* isEnd ) {
+char* _ui_get_key( atomic_int* isEnd, input_type* type, input_type expected ) {
     char* c = malloc(sizeof(char));
     for(;;) {
-        if( *isEnd == 1) {
+        if( *isEnd == 1 || *type != expected ) {
             free(c);
             c = 0;
             break;
@@ -266,11 +272,12 @@ char* _ui_get_key( atomic_int* isEnd ) {
         if( *c > 0 ) {
             break;
         }
+        //SLEEP(10);
     }
     return c;
 }
 
-char* _ui_read_command( atomic_int* isEnd ) {
+char* _ui_read_command( atomic_int* isEnd, input_type* type, input_type expected  ) {
     char* input = malloc(sizeof(char)*MAX_INPUT_SIZE);
     int i = 0;
     while( true ) {
@@ -279,7 +286,7 @@ char* _ui_read_command( atomic_int* isEnd ) {
             input = 0;
             break;
         }
-        char* new_key = _ui_get_key( isEnd );
+        char* new_key = _ui_get_key( isEnd, type, expected );
         if( new_key == 0) {
             free(input);
             input = 0;

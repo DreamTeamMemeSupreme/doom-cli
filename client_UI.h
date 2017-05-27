@@ -12,6 +12,7 @@
 #include "client_task.h"
 #include <string.h>
 #include <stdlib.h>
+#include <stdatomic.h>
 #define MAX_INPUT_SIZE 60
 #define NUMBER_OF_TEAMS_ON_PAGE 18
 

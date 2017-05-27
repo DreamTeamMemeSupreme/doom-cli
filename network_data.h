@@ -51,22 +51,22 @@ typedef enum {
 } game_direction;
 
 typedef struct {
-    uint16_t err_code;
+    error_type err_code;
     void *message;
 } game_error_data;
 
 typedef struct {
     uint16_t size;
-    char *team_name;
+    char team_name[60];
 } team_create_data;
 
 typedef struct {
-    char *team_name;
+    char team_name[60];
 } team_info_data;
 
 typedef struct {
-    char *team_name;
-    char *player_name;
+    char team_name[60];
+    char player_name[60];
 } team_join_data;
 
 typedef struct {
@@ -86,14 +86,14 @@ typedef struct {
 typedef struct {
     uint16_t size;
     uint16_t count;
-    char** players;
+    char* players[60];
 } response_team_info_data;
 
 typedef struct {
     uint16_t count;
     uint16_t* players;
     uint16_t* sizes;
-    char** teams;
+    char* teams[60];
 } response_team_list_data;
 
 typedef struct {

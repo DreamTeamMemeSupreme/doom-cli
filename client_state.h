@@ -10,11 +10,11 @@
 #include "network_data.h"
 #include "client_task_queue.h"
 #include <pthread.h>
+#include <netinet/in.h>
 
 typedef enum {
     DEFAULT,
     INFO,
-    LOBBY,
     LIST,
     GAME
 } stage_type;
@@ -25,8 +25,11 @@ typedef struct {
     bool connection;
     atomic_int quit;
     uint16_t page;
-    uint16_t max_page;
     response_team_info_data* team_info;
+	response_team_list_data* team_list;
+	char name[30];
+	int sockfd;
+	struct sockaddr_in server_sin;
     pthread_t user_input;
     pthread_t server_receive;
     struct client_task_queue queue;
